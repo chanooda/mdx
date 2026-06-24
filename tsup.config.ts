@@ -1,13 +1,22 @@
 import { copyFileSync } from "node:fs";
 import { defineConfig } from "tsup";
+import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
 
 const sharedConfig = {
   format: ["esm"] as const,
   dts: true,
+  metafile: true,
   external: ["react", "react-dom", "next", "next-mdx-remote", "@mdx-js/mdx"],
   esbuildOptions(options: import("esbuild").BuildOptions) {
     options.legalComments = "inline";
   },
+  esbuildPlugins: [
+    preserveDirectivesPlugin({
+      directives: ["use client"],
+      include: /\.(js|ts|jsx|tsx)$/,
+      exclude: /node_modules/,
+    }),
+  ],
 };
 
 export default defineConfig([
@@ -17,10 +26,6 @@ export default defineConfig([
       "react/index": "src/react/index.ts",
     },
     clean: false,
-    esbuildOptions(options: import("esbuild").BuildOptions) {
-      options.legalComments = "inline";
-      options.banner = { js: '"use client";' };
-    },
   },
   {
     ...sharedConfig,
