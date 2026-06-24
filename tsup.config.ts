@@ -5,7 +5,7 @@ import { preserveDirectivesPlugin } from "esbuild-plugin-preserve-directives";
 const sharedConfig = {
   format: ["esm"] as const,
   dts: true,
-  metafile: true,
+  bundle: false,
   external: ["react", "react-dom", "next", "next-mdx-remote", "@mdx-js/mdx"],
   esbuildOptions(options: import("esbuild").BuildOptions) {
     options.legalComments = "inline";
@@ -22,18 +22,35 @@ const sharedConfig = {
 export default defineConfig([
   {
     ...sharedConfig,
-    entry: {
-      "react/index": "src/react/index.ts",
-    },
+    entry: [
+      "src/react/index.ts",
+      "src/react/mdx-content.tsx",
+      "src/react/github-repo.tsx",
+      "src/react/x-post.tsx",
+    ],
+    outDir: "dist/react",
     clean: false,
   },
   {
     ...sharedConfig,
-    entry: {
-      "components/index": "src/components/index.ts",
-      "config/index": "src/config/index.ts",
-      "next/index": "src/next/index.ts",
-    },
+    entry: [
+      "src/components/index.ts",
+      "src/components/callout.tsx",
+      "src/components/file-tree.tsx",
+      "src/components/steps.tsx",
+      "src/components/tabs.tsx",
+      "src/components/embed/code-sandbox.tsx",
+      "src/components/embed/github-gist.tsx",
+      "src/components/embed/github-repo-view.tsx",
+      "src/components/embed/x-post-view.tsx",
+      "src/components/embed/youtube.tsx",
+      "src/config/index.ts",
+      "src/next/index.ts",
+      "src/next/mdx-content.tsx",
+      "src/next/github-repo.tsx",
+      "src/next/x-post.tsx",
+    ],
+    outDir: "dist",
     clean: true,
     onSuccess: async () => {
       copyFileSync("src/styles.css", "dist/styles.css");
