@@ -210,3 +210,12 @@ code[data-line-numbers] > [data-line]::before {
   text-align: right;
   color: #444;
 }
+.mdx-x-post__error {
+  margin-block: 1rem;
+  border-radius: var(--mdx-radius);
+  border: 1px solid var(--mdx-embed-border);
+  padding: 0.75rem 1rem;
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: var(--mdx-text-muted);
+}
