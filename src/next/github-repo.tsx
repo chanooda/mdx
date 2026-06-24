@@ -6,7 +6,7 @@ export async function fetchGitHubRepo(
   try {
     const res = await fetch(`https://api.github.com/repos/${repo}`, {
       next: { revalidate: 3600 },
-    });
+    } as RequestInit);
     if (res.ok) return (await res.json()) as GitHubRepoData;
   } catch {}
   return null;
