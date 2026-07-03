@@ -1,15 +1,23 @@
 import { readFileSync, existsSync } from "node:fs";
 
-const required = [
-  "dist/components/index.js",
-  "dist/config/index.js",
-  "dist/next/index.js",
-  "dist/react/index.js",
-  "dist/components/index.d.ts",
-  "dist/styles.css",
-];
+// Derive the required files from package.json `exports` so every published
+// subpath is verified to ship BOTH its runtime (`import`) and its types
+// (`types`). A prior 0.1.0 release shipped dist/react/*.js without the matching
+// .d.ts (a build race wiped them) and nothing caught it — hence this check.
+const pkg = JSON.parse(readFileSync("package.json", "utf-8"));
+const required = new Set();
+for (const entry of Object.values(pkg.exports)) {
+  if (typeof entry === "string") {
+    required.add(entry);
+    continue;
+  }
+  for (const target of Object.values(entry)) {
+    if (typeof target === "string") required.add(target);
+  }
+}
 for (const f of required) {
-  if (!existsSync(f)) throw new Error(`missing build output: ${f}`);
+  const path = f.replace(/^\.\//, "");
+  if (!existsSync(path)) throw new Error(`missing build output: ${path}`);
 }
 
 function hasClientDirective(content) {

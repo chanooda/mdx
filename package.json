@@ -1,6 +1,6 @@
 {
   "name": "@chanooda/mdx",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "sideEffects": [
     "*.css"
@@ -37,6 +37,8 @@
   },
   "scripts": {
     "build": "tsup",
+    "check-dist": "node scripts/check-dist.mjs",
+    "prepublishOnly": "npm run build && npm run check-dist",
     "test": "vitest run",
     "test:watch": "vitest"
   },
